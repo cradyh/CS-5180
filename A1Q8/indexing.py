@@ -30,12 +30,16 @@ stemming = {'loves': 'love', 'dogs': 'dog', 'cats': 'cat'}
 # Identifying the index terms.
 # --> add your Python code here
 terms = []
+processed_documents = []
 for doc in documents:
     texts = doc.split()
+    temp = []
     for word in texts:
         if word.lower() not in stopWords:
             stemmed_word = stemming.get(word.lower(), word.lower())
             terms.append(stemmed_word)
+            temp.append(stemmed_word)
+    processed_documents.append(temp)
 
 # Calculate df for each term
 df = {term: 0 for term in terms}
@@ -49,12 +53,12 @@ for doc in documents:
 # Building the document-term matrix by using the tf-idf weights.
 # --> add your Python code here
 docTermMatrix = []
-for doc in documents:
+for i, doc in enumerate(documents):
     doc_words = doc.split()
     stemmed_doc_words = [stemming.get(word.lower(), word.lower()) for word in doc_words]
     tfidf_list = []
     for word in set(terms):
-        tf = stemmed_doc_words.count(word)/len(doc_words)
+        tf = processed_documents[i].count(word)/len(processed_documents[i])
         idf = math.log10(len(documents)/df[word])
         tfidf = round(tf * idf, 4)
         tfidf_list.append(tfidf)
