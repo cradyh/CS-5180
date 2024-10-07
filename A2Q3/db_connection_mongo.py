@@ -1,8 +1,8 @@
 from pymongo import MongoClient
 import datetime
 
-def connectDataBase():
 
+def connectDataBase():
     # Creating a database connection object using pymongo
 
     DB_NAME = "CPP"
@@ -21,7 +21,6 @@ def connectDataBase():
 
 
 def createUser(col, id, name, email):
-
     # Value to be inserted
     user = {"_id": id,
             "name": name,
@@ -33,23 +32,20 @@ def createUser(col, id, name, email):
 
 
 def updateUser(col, id, name, email):
-
     # User fields to be updated
-    user = {"$set": {"name": name, "email": email} }
+    user = {"$set": {"name": name, "email": email}}
 
     # Updating the user
     col.update_one({"_id": id}, user)
 
 
 def deleteUser(col, id):
-
     # Delete the document from the database
     col.delete_one({"_id": id})
 
 
 def getUser(col, id):
-
-    user = col.find_one({"_id":id})
+    user = col.find_one({"_id": id})
 
     if user:
         return str(user['_id']) + " | " + user['name'] + " | " + user['email']
@@ -58,42 +54,39 @@ def getUser(col, id):
 
 
 def createComment(col, id_user, dateTime, comment):
-
     # Comments to be included
     comments = {"$push": {"comments": {
-                                       "datetime": datetime.datetime.strptime(dateTime, "%m/%d/%Y %H:%M:%S"),
-                                       "comment": comment
-                                       } }}
+        "datetime": datetime.datetime.strptime(dateTime, "%m/%d/%Y %H:%M:%S"),
+        "comment": comment
+    }}}
 
     # Updating the user document
     col.update_one({"_id": id_user}, comments)
 
 
 def updateComment(col, id_user, dateTime, new_comment):
-
     # User fields to be updated
-    comment = {"$set": {"comments.$.comment": new_comment} }
+    comment = {"$set": {"comments.$.comment": new_comment}}
 
     # Updating the user
-    col.update_one({"_id": id_user, "comments.datetime": datetime.datetime.strptime(dateTime, "%m/%d/%Y %H:%M:%S")}, comment)
+    col.update_one({"_id": id_user, "comments.datetime": datetime.datetime.strptime(dateTime, "%m/%d/%Y %H:%M:%S")},
+                   comment)
 
 
 def deleteComment(col, id_user, dateTime):
-
     # Comments to be delete
-    comments = {"$pull": {"comments": {"datetime": datetime.datetime.strptime(dateTime, "%m/%d/%Y %H:%M:%S")} }}
+    comments = {"$pull": {"comments": {"datetime": datetime.datetime.strptime(dateTime, "%m/%d/%Y %H:%M:%S")}}}
 
     # Updating the user document
     col.update_one({"_id": id_user}, comments)
 
 
 def getChat(col):
-
     # creating a document for each message
     pipeline = [
-                 {"$unwind": { "path": "$comments" }},
-                 {"$sort": {"comments.datetime": 1}}
-               ]
+        {"$unwind": {"path": "$comments"}},
+        {"$sort": {"comments.datetime": 1}}
+    ]
 
     comments = col.aggregate(pipeline)
 
@@ -138,12 +131,18 @@ def createDocument(col, docId, docText, docTitle, docDate, docCat):
         col.update_one({"_id": docId}, terms)
 
 
-def updateDocument(documents, docId, docText, docTitle, docDate, docCat):
-    return
+def updateDocument(col, docId, docText, docTitle, docDate, docCat):
+    update_content = {"text": docText,
+                      "title": docTitle,
+                      "date": datetime.datetime.strptime(docDate, "%Y-%m-%d"),
+                      "category": docCat
+                      }
+
+    col.update_one({"_id": docId}, {"$set": update_content})
 
 
-def deleteDocument(documents, docId):
-    return
+def deleteDocument(col, docId):
+    col.delete_one({"_id": docId})
 
 
 def getIndex(col):
@@ -171,4 +170,3 @@ def getIndex(col):
             term_dict[term] = f"{title}:{count}"
 
     return term_dict
-
