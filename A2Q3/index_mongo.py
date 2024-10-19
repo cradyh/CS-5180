@@ -34,17 +34,11 @@ if __name__ == '__main__':
 
           if (option == "a"):
 
-              # docId = input("Enter the ID of the document: ")
-              # docText = input("Enter the text of the document: ")
-              # docTitle = input("Enter the title of the document: ")
-              # docDate = input("Enter the date of the document: ")
-              # docCat = input("Enter the category of the document: ")
-
-              docId = 4
-              docText = "Months, months, months later we found why."
-              docTitle = "Yes"
-              docDate = "2024-09-05"
-              docCat = "Seasons"
+              docId = input("Enter the ID of the document: ")
+              docText = input("Enter the text of the document: ")
+              docTitle = input("Enter the title of the document: ")
+              docDate = input("Enter the date of the document: ")
+              docCat = input("Enter the category of the document: ")
 
               createDocument(documents, docId, docText, docTitle, docDate, docCat)
 
