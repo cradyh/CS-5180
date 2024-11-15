@@ -1,5 +1,3 @@
-import re
-
 from crawler import *
 
 
@@ -19,10 +17,10 @@ if __name__ == '__main__':
     db = connectDataBase()
     professors_db = db['professors']
 
-    # url = 'https://www.cpp.edu/sci/computer-science/'
-    # faculty_page = find_page(url, 'Permanent Faculty')
+    url = 'https://www.cpp.edu/sci/computer-science/'
+    faculty_page = find_page(url, 'Permanent Faculty')
 
-    html = urlopen('https://www.cpp.edu/sci/computer-science/faculty-and-staff/permanent-faculty.shtml')
+    html = urlopen(faculty_page)
     bs = BeautifulSoup(html.read(), "html.parser")
     professor_info = bs.find_all('div', {'class': 'clearfix'})
     for professor in professor_info:
